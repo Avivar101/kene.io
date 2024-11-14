@@ -255,6 +255,9 @@ func main() {
 
 	router := mux.NewRouter()
 
+	// Serve static files
+	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+
 	router.HandleFunc("/", homeHandler)
 	router.HandleFunc("/blog/{slug}", renderPostMarkdown)
 	router.HandleFunc("/blog/admin/post", templateHandler)
