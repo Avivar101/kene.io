@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Blog</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .post { margin-bottom: 10px; }
+        .date { font-size: 0.9em; color: gray; }
+        .title { font-size: 1.2em; color: #007bff; text-decoration: none; }
+        .title:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Blog</a> | <a href="/about">Linkdln</a> | <a href="/contact">Twitter</a> | <a href="/contact">Medium</a> 
+        </nav>
+        <hr>
+    </header>
+    <main>
+        {{range $year, $posts := .}}
+        <h1>{{$year}}</h1>
+        {{range $posts}}
+        <div class="post">
+            <span class="date">{{.PostedDate.Format "02 Jan"}}</span>
+            <a href="/blog/{{.Slug}}?id={{.UniqueID}}" class="title">{{.Title}}</a>
+        </div>
+        {{end}}
+    {{end}}
+    </main>
+</body>
+
+</html>
