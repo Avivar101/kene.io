@@ -15,13 +15,14 @@ TODO.
 [x] first blog sample
 [x] style content page
 [x] proper markdown formatting
-[] reset database
+[x] reset database
 [] set branch deployment
 [] polish up
 [] document README
 [] write up
 [] set CDN
 
+[] what happens to my database whenever I redeploy
 
 Features
 [x] tag

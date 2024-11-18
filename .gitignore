@@ -24,3 +24,4 @@ tmp/
 
 # Go workspace file
 go.work
+local_config.go

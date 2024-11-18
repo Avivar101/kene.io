@@ -69,7 +69,6 @@ func savePostToDB(post Post) error {
 
 	query := `INSERT INTO posts (id, title, posted_date, slug, tags, subpart) VALUES (?, ?, ?, ?, ?, ?)`
 	postTags := strings.Join(post.Tags, ",")
-	fmt.Print("this is postTags: ", postTags)
 	_, err := db.Exec(query, post.UniqueID, post.Title, post.PostedDate.Format("2006-01-02"), post.Slug, postTags, post.Subpart)
 	return err
 }
@@ -304,6 +303,5 @@ func main() {
 	router.HandleFunc("/blog/admin/post", templateHandler)
 	router.HandleFunc("/blog/admin/submit-post", submitPostsHandler)
 
-	log.Println("Server started at http://localhost:8080")
 	log.Fatal(http.ListenAndServe("0.0.0.0:8080", router))
 }
