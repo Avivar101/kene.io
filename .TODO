@@ -3,14 +3,28 @@ TODO.
 [x] display post on home page
 [x] link post to page
 [x] adjust date
-[] link for socials
+[x] link for socials
 
-[] work on font
-[] structure and comment code
+[x] font styling
+    [x] mobile style
+    [x] desktop style
+[x] adjust POST struct ->
+    [x] add "Subpart"
+    [x] tags
+[] style content page
+[] reset database
+[] set branch deployment
+[x] structure and comment code
+[] first blog sample
+[] document README
+[] write up
+[] set CDN
 
 
 Features
-[] tag
+[x] tag
+[] admin CMS
+[] editable post
 [] share
 [] comment
 [] view counts
