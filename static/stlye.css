@@ -88,9 +88,37 @@ main h1 {
     font-size: 2.5rem;
     color: var(--accent);
     margin: 2rem 0 1.5rem;
-    border-bottom: 2px solid var(--accent);
-    padding-bottom: 0.5rem;
+    padding-bottom: 0.005rem;
 }
+
+.content h2, h3 {
+    margin-top: 30px;
+    margin-bottom: 0.5em;
+}
+
+.content ol, ul {
+    margin-left: 1.5em;
+    line-height: 1.6;
+}
+
+.content li {
+    margin-bottom: 0.5em;
+}
+
+.content p > em {
+    font-size: 0.9rem; /* Slightly smaller text */
+    color: #666; /* Muted gray for less emphasis */
+    font-style: italic; /* Italic for emphasis */
+    display: block; /* Ensures it's on its own line if needed */
+    margin-top: 0.05em; /* Optional spacing adjustments */
+    margin-bottom: 0.5em;
+}
+
+
+strong {
+    font-weight: bold;
+}
+
 
 /* Post container styles */
 .post {

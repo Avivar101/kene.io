@@ -2,6 +2,7 @@ package main
 
 // module imports
 import (
+	"bytes"
 	"database/sql"
 	"fmt"
 	"html/template"
@@ -14,9 +15,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/yuin/goldmark"
+
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	"github.com/russross/blackfriday/v2"
 	_ "modernc.org/sqlite"
 )
 
@@ -36,7 +38,7 @@ type PageData struct {
 }
 
 // home template
-var tmpl = template.Must(template.ParseFiles("../templates/index2.html"))
+var tmpl = template.Must(template.ParseFiles("../templates/index.html"))
 var db *sql.DB
 
 // initialize Databbase
@@ -66,7 +68,9 @@ func initDB() {
 func savePostToDB(post Post) error {
 
 	query := `INSERT INTO posts (id, title, posted_date, slug, tags, subpart) VALUES (?, ?, ?, ?, ?, ?)`
-	_, err := db.Exec(query, post.UniqueID, post.Title, post.PostedDate.Format("2006-01-02"), post.Slug, post.Tags, post.Subpart)
+	postTags := strings.Join(post.Tags, ",")
+	fmt.Print("this is postTags: ", postTags)
+	_, err := db.Exec(query, post.UniqueID, post.Title, post.PostedDate.Format("2006-01-02"), post.Slug, postTags, post.Subpart)
 	return err
 }
 
@@ -81,12 +85,13 @@ func fetchPostsFromDB() []Post {
 	var posts []Post
 	for rows.Next() {
 		var post Post
-		var dateStr string
-		if err := rows.Scan(&post.UniqueID, &post.Title, &dateStr, &post.Slug, &post.Tags, &post.Subpart); err != nil {
+		var tagsStr, dateStr string
+		if err := rows.Scan(&post.UniqueID, &post.Title, &dateStr, &post.Slug, &tagsStr, &post.Subpart); err != nil {
 			log.Println("Row scan error:", err)
 			continue
 		}
 
+		post.Tags = strings.Split(tagsStr, ",") // Convert the comma-separated string to a slice
 		// parse date to display properly
 		parsedTime, err := time.Parse(time.RFC3339, dateStr)
 		if err != nil {
@@ -146,8 +151,11 @@ func renderPostMarkdown(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Parse markdown to HTML
-	htmlContent := blackfriday.Run(content)
+	var buf bytes.Buffer
+	if err := goldmark.Convert([]byte(content), &buf); err != nil {
+		http.Error(w, "Failed to parse markdown", http.StatusInternalServerError)
+		return
+	}
 
 	// render html template
 	tmpl, err := template.ParseFiles("../templates/layout.html")
@@ -156,7 +164,7 @@ func renderPostMarkdown(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl.Execute(w, template.HTML(htmlContent))
+	tmpl.Execute(w, template.HTML(buf.String()))
 }
 
 // render template for home page
@@ -201,6 +209,8 @@ func submitPostsHandler(w http.ResponseWriter, r *http.Request) {
 	for i, tag := range tagsSlice {
 		tagsSlice[i] = strings.TrimSpace(tag)
 	}
+
+	fmt.Print("this is the tagsSlice:", tagsSlice)
 
 	// check legnt of characters for subpart, send error if exceeds 20
 	if len(subpart) > 20 {
@@ -250,7 +260,7 @@ func submitPostsHandler(w http.ResponseWriter, r *http.Request) {
 	err = savePostToDB(post)
 	log.Println("Saving post to DB")
 	if err != nil {
-		http.Error(w, "Failed to save post data", http.StatusInternalServerError)
+		log.Fatalf("Failed to save data: %v", err)
 		return
 	}
 
@@ -278,7 +288,7 @@ func templateHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// init db
+	// init database
 	initDB()
 	defer db.Close()
 
@@ -288,6 +298,7 @@ func main() {
 	// Serve static files
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("../static/"))))
 
+	// handle routing
 	router.HandleFunc("/", homeHandler)
 	router.HandleFunc("/blog/{slug}", renderPostMarkdown)
 	router.HandleFunc("/blog/admin/post", templateHandler)

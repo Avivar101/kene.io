@@ -11,11 +11,13 @@ TODO.
 [x] adjust POST struct ->
     [x] add "Subpart"
     [x] tags
-[] style content page
+[x] structure and comment code
+[x] first blog sample
+[x] style content page
+[x] proper markdown formatting
 [] reset database
 [] set branch deployment
-[x] structure and comment code
-[] first blog sample
+[] polish up
 [] document README
 [] write up
 [] set CDN

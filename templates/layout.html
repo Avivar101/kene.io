@@ -4,11 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Blog</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/stlye.css">
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .post { margin-bottom: 10px; }
+        .date { font-size: 0.9em; color: gray; }
+        .title { font-size: 1.2em; color: #007bff; text-decoration: none; }
+        .title:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
-    <div class="content">
-        {{ . }}  <!-- This is where your markdown content goes -->
-    </div>
+    <header>
+        <nav>
+            <h1>MY Blog</h1>
+            <button class="menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links">
+                <a href="/" class="active">Home</a>
+                <a href="#">Projects</a>
+                <a href="#">Research</a>
+                <a href="#">About</a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="content">
+            {{ . }}  <!-- This is where your markdown content goes -->
+        </div>
+    </main>
 </body>
+
 </html>

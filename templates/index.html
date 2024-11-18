@@ -3,22 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Blog</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        .post { margin-bottom: 10px; }
-        .date { font-size: 0.9em; color: gray; }
-        .title { font-size: 1.2em; color: #007bff; text-decoration: none; }
-        .title:hover { text-decoration: underline; }
-    </style>
+    <title>ML Engineer</title>
+    <link rel="stylesheet" href="/static/stlye.css">
 </head>
 <body>
     <header>
         <nav>
-            <a href="mailto:benjohnokezie@gmail.com">Email</a> | <a href="https://www.linkedin.com/in/okeziebenj/" target="_blank">Linkdln</a> | <a href="https://x.com/BenjOkezie" target="_blank">Twitter</a> | <a href="https://medium.com/@benjohnokezie" target="_blank">Medium</a> 
+            <h1>MY Blog</h1>
+            <button class="menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links">
+                <a href="/" class="active">Home</a>
+                <a href="#">Projects</a>
+                <a href="#">Research</a>
+                <a href="#">About</a>
+            </div>
         </nav>
-        <hr>
     </header>
+
     <main>
         {{range $year, $posts := .}}
         <h1>{{$year}}</h1>
@@ -28,8 +33,29 @@
             <a href="/blog/{{.Slug}}?id={{.UniqueID}}" class="title">{{.Title}}</a>
         </div>
         {{end}}
-    {{end}}
+        {{end}}
     </main>
-</body>
 
+    <footer>
+        <p>© 2024 ML Engineering Insights. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('nav')) {
+                menuToggle.classList.remove('active');
+                navLinks.classList.remove('active');
+            }
+        });
+    </script>
+</body>
 </html>
