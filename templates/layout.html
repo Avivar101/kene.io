@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Blog</title>
+    <title>Kene</title>
     <link rel="stylesheet" href="/static/stlye.css">
     <style>
         body { font-family: Arial, sans-serif; }
@@ -16,17 +16,11 @@
 <body>
     <header>
         <nav>
-            <h1>MY Blog</h1>
-            <button class="menu-toggle" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+            <h1><a href="/">Kene</a></h1>
             <div class="nav-links">
-                <a href="/" class="active">Home</a>
-                <a href="#">Projects</a>
-                <a href="#">Research</a>
-                <a href="#">About</a>
+                <a href="/projects">Projects</a>
+                <a href="/profile">Profile</a>
+                <button class="email-btn" onclick="window.location.href='mailto:benjohnokezie@gmail.com'">Send email</button>
             </div>
         </nav>
     </header>
@@ -35,6 +29,8 @@
             {{ . }}  <!-- This is where your markdown content goes -->
         </div>
     </main>
+    <footer>
+        <p>© 2024 Kene. All rights reserved.</p>
+    </footer>
 </body>
-
 </html>

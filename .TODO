@@ -16,13 +16,14 @@ TODO.
 [x] style content page
 [x] proper markdown formatting
 [x] reset database
-[] set branch deployment
+[x] set branch deployment
 [] polish up
 [] document README
 [] write up
 [] set CDN
 
-[] what happens to my database whenever I redeploy
+[x] what happens to my database whenever I redeploy
+[] persistent disk
 
 Features
 [x] tag

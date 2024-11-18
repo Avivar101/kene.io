@@ -286,6 +286,24 @@ func templateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// coming soon template
+func comingSoon(w http.ResponseWriter, r *http.Request) {
+	// Parse the template file
+	tmplParsed, err := template.ParseFiles("../templates/comingSoon.html")
+	if err != nil {
+		http.Error(w, "Error parsing template: "+err.Error(), http.StatusInternalServerError)
+		log.Println("Template parsing error:", err)
+		return
+	}
+
+	// Execute the template with nil data
+	err = tmplParsed.Execute(w, nil)
+	if err != nil {
+		http.Error(w, "Error executing template: "+err.Error(), http.StatusInternalServerError)
+		log.Println("Template execution error:", err)
+	}
+}
+
 func main() {
 	// init database
 	initDB()
@@ -299,9 +317,11 @@ func main() {
 
 	// handle routing
 	router.HandleFunc("/", homeHandler)
-	router.HandleFunc("/blog/{slug}", renderPostMarkdown)
-	router.HandleFunc("/blog/admin/post", templateHandler)
-	router.HandleFunc("/blog/admin/submit-post", submitPostsHandler)
+	router.HandleFunc("/projects", comingSoon)
+	router.HandleFunc("/profile", comingSoon)
+	router.HandleFunc("/{slug}", renderPostMarkdown)
+	router.HandleFunc("/admin/post", templateHandler)
+	router.HandleFunc("/admin/submit-post", submitPostsHandler)
 
 	log.Fatal(http.ListenAndServe("0.0.0.0:8080", router))
 }
