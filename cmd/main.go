@@ -1,5 +1,6 @@
 package main
 
+// module imports
 import (
 	"database/sql"
 	"fmt"
@@ -25,13 +26,20 @@ type Post struct {
 	Title      string    `json:"title"`
 	PostedDate time.Time `json:"posted_date"`
 	Slug       string    `json:"slug"`
+	Tags       []string  `json:"tags"`
+	Subpart    string
 }
 
+// PageData represents data to be displayed on webpage
 type PageData struct {
 	Message string
 }
 
-// initialize DB
+// home template
+var tmpl = template.Must(template.ParseFiles("../templates/index2.html"))
+var db *sql.DB
+
+// initialize Databbase
 func initDB() {
 	var err error
 	db, err = sql.Open("sqlite", "./blog.db")
@@ -43,7 +51,9 @@ func initDB() {
 		id TEXT PRIMARY KEY,
 		title TEXT NOT NULL,	
 		posted_date DATE NOT NULL,
-		slug TEXT NOT NULL
+		slug TEXT NOT NULL,
+		tags TEXT, -- Comma-separated tags
+    	subpart TEXT -- Blog preview
 	);`
 
 	_, err = db.Exec(createTableQuery)
@@ -55,13 +65,14 @@ func initDB() {
 // save post data to database
 func savePostToDB(post Post) error {
 
-	query := `INSERT INTO posts (id, title, posted_date, slug) VALUES (?, ?, ?, ?)`
-	_, err := db.Exec(query, post.UniqueID, post.Title, post.PostedDate.Format("2006-01-02"), post.Slug)
+	query := `INSERT INTO posts (id, title, posted_date, slug, tags, subpart) VALUES (?, ?, ?, ?, ?, ?)`
+	_, err := db.Exec(query, post.UniqueID, post.Title, post.PostedDate.Format("2006-01-02"), post.Slug, post.Tags, post.Subpart)
 	return err
 }
 
+// fetch post data for homepage from database
 func fetchPostsFromDB() []Post {
-	rows, err := db.Query("SELECT id, title, posted_date, slug FROM posts ORDER BY posted_date DESC")
+	rows, err := db.Query("SELECT id, title, posted_date, slug, tags, subpart FROM posts ORDER BY posted_date DESC")
 	if err != nil {
 		log.Fatalf("Query error: %v", err)
 	}
@@ -71,15 +82,19 @@ func fetchPostsFromDB() []Post {
 	for rows.Next() {
 		var post Post
 		var dateStr string
-		if err := rows.Scan(&post.UniqueID, &post.Title, &dateStr, &post.Slug); err != nil {
+		if err := rows.Scan(&post.UniqueID, &post.Title, &dateStr, &post.Slug, &post.Tags, &post.Subpart); err != nil {
 			log.Println("Row scan error:", err)
 			continue
 		}
+
+		// parse date to display properly
 		parsedTime, err := time.Parse(time.RFC3339, dateStr)
 		if err != nil {
 			log.Fatalf("parse date error: %v", err)
 		}
 		post.PostedDate = parsedTime.Truncate(24 * time.Hour)
+
+		// append post to posts
 		posts = append(posts, post)
 	}
 
@@ -90,10 +105,35 @@ func fetchPostsFromDB() []Post {
 	return posts
 }
 
-var tmpl = template.Must(template.ParseFiles("../templates/index.html"))
-var db *sql.DB
+// GenerateSlug creates a URL-friendly slug from a given title
+func GenerateSlug(title string) string {
+	// Convert the title to lowercase
+	slug := strings.ToLower(title)
 
-// render blog post markdown
+	// Replace spaces with hyphens
+	slug = strings.ReplaceAll(slug, " ", "-")
+
+	// Remove any characters that are not letters, numbers, or hyphens
+	re := regexp.MustCompile(`[^a-z0-9-]+`)
+	slug = re.ReplaceAllString(slug, "")
+
+	// Trim any trailing hyphens
+	slug = strings.Trim(slug, "-")
+
+	return slug
+}
+
+// function to group posts by year
+func groupPostsByYear(posts []Post) map[int][]Post {
+	postsByYear := make(map[int][]Post)
+	for _, post := range posts {
+		year := post.PostedDate.Year()
+		postsByYear[year] = append(postsByYear[year], post)
+	}
+	return postsByYear
+}
+
+// get markdown file and render as html page - for blog posts
 func renderPostMarkdown(w http.ResponseWriter, r *http.Request) {
 
 	id := r.URL.Query().Get("id")
@@ -109,6 +149,7 @@ func renderPostMarkdown(w http.ResponseWriter, r *http.Request) {
 	// Parse markdown to HTML
 	htmlContent := blackfriday.Run(content)
 
+	// render html template
 	tmpl, err := template.ParseFiles("../templates/layout.html")
 	if err != nil {
 		http.Error(w, "Could not load template.", 500)
@@ -118,7 +159,7 @@ func renderPostMarkdown(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, template.HTML(htmlContent))
 }
 
-// render home page template
+// render template for home page
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	posts := fetchPostsFromDB()
 
@@ -129,10 +170,9 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Template error", http.StatusInternalServerError)
 		log.Println("Template error:", err)
 	}
-
 }
 
-// submit and save post
+// submit and save blog post
 func submitPostsHandler(w http.ResponseWriter, r *http.Request) {
 	// check if POST request
 	if r.Method != http.MethodPost {
@@ -147,12 +187,28 @@ func submitPostsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get id & title
+	// retrieve content data
 	id := uuid.New().String()
 	title := r.FormValue("title")
+	tags := r.FormValue("tags")
+	subpart := r.FormValue("subpart")
 	slug := GenerateSlug(title)
 
-	// HAndle uploaded Markdown file
+	// Split the string by comma and strip whitespace
+	tagsSlice := strings.Split(tags, ",")
+
+	// Trim any extra whitespace from each tag
+	for i, tag := range tagsSlice {
+		tagsSlice[i] = strings.TrimSpace(tag)
+	}
+
+	// check legnt of characters for subpart, send error if exceeds 20
+	if len(subpart) > 20 {
+		http.Error(w, "Subpart exceeds 20 characters", http.StatusBadRequest)
+		return
+	}
+
+	// Handle uploaded Markdown file
 	file, handler, err := r.FormFile("content")
 	if err != nil {
 		http.Error(w, "Error uploading file", http.StatusBadRequest)
@@ -186,9 +242,11 @@ func submitPostsHandler(w http.ResponseWriter, r *http.Request) {
 		Title:      title,
 		PostedDate: time.Now(),
 		Slug:       slug,
+		Tags:       tagsSlice,
+		Subpart:    subpart,
 	}
 
-	// save post to db
+	// save post to database
 	err = savePostToDB(post)
 	log.Println("Saving post to DB")
 	if err != nil {
@@ -196,7 +254,6 @@ func submitPostsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Process the post data as needed, e.g store in a database
 	fmt.Fprintf(w, "Post submitted successfully with title: %s and content saved as %s", title, handler.Filename)
 }
 
@@ -220,43 +277,16 @@ func templateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// function to group posts by year
-func groupPostsByYear(posts []Post) map[int][]Post {
-	postsByYear := make(map[int][]Post)
-	for _, post := range posts {
-		year := post.PostedDate.Year()
-		postsByYear[year] = append(postsByYear[year], post)
-	}
-	return postsByYear
-}
-
-// GenerateSlug creates a URL-friendly slug from a given title
-func GenerateSlug(title string) string {
-	// Convert the title to lowercase
-	slug := strings.ToLower(title)
-
-	// Replace spaces with hyphens
-	slug = strings.ReplaceAll(slug, " ", "-")
-
-	// Remove any characters that are not letters, numbers, or hyphens
-	re := regexp.MustCompile(`[^a-z0-9-]+`)
-	slug = re.ReplaceAllString(slug, "")
-
-	// Trim any trailing hyphens
-	slug = strings.Trim(slug, "-")
-
-	return slug
-}
-
 func main() {
 	// init db
 	initDB()
 	defer db.Close()
 
+	// initialize router
 	router := mux.NewRouter()
 
 	// Serve static files
-	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("../static/"))))
 
 	router.HandleFunc("/", homeHandler)
 	router.HandleFunc("/blog/{slug}", renderPostMarkdown)

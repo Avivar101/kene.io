@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Engineer</title>
+    <link rel="stylesheet" href="/static/stlye.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>MY Blog</h1>
+            <button class="menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links">
+                <a href="#" class="active">Home</a>
+                <a href="#">Projects</a>
+                <a href="#">Research</a>
+                <a href="#">About</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        {{range $year, $posts := .}}
+        <h1>{{$year}}</h1>
+        {{range $posts}}
+        <div class="post">
+            <span class="date">{{.PostedDate.Format "02 Jan"}}</span>
+            <a href="/blog/{{.Slug}}?id={{.UniqueID}}" class="title">{{.Title}}</a>
+        </div>
+        {{end}}
+        {{end}}
+    </main>
+
+    <footer>
+        <p>© 2024 ML Engineering Insights. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('nav')) {
+                menuToggle.classList.remove('active');
+                navLinks.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
