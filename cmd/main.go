@@ -212,8 +212,8 @@ func submitPostsHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Print("this is the tagsSlice:", tagsSlice)
 
 	// check legnt of characters for subpart, send error if exceeds 20
-	if len(subpart) > 20 {
-		http.Error(w, "Subpart exceeds 20 characters", http.StatusBadRequest)
+	if len(subpart) > 200 {
+		http.Error(w, "Subpart exceeds 200 characters", http.StatusBadRequest)
 		return
 	}
 
