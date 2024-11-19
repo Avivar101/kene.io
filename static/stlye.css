@@ -46,6 +46,12 @@ nav h1 > a {
     text-decoration: none;
 }
 
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
 .nav-links {
     display: flex;
     gap: 2rem;
@@ -84,6 +90,7 @@ main {
     max-width: 1200px;
     margin: 2rem auto;
     padding: 0 1rem;
+    flex: 1;
 }
 
 /* Year heading styles */
@@ -133,6 +140,7 @@ strong {
     align-items: center;
     gap: 2rem;
     transition: transform 0.3s ease, background-color 0.3s ease;
+    max-width: 700px;
 }
 
 .post:hover {
@@ -190,6 +198,7 @@ footer {
     .post {
         padding: 1rem;
         gap: 1rem;
+        margin-bottom: 5px;
     }
 
     .post .date {
