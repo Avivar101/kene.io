@@ -24,7 +24,7 @@
         {{range $posts}}
         <div class="post">
             <span class="date">{{.PostedDate.Format "02 Jan"}}</span>
-            <a href="/blog/{{.Slug}}?id={{.UniqueID}}" class="title">{{.Title}}</a>
+            <a href="/{{.Slug}}?id={{.UniqueID}}" class="title">{{.Title}}</a>
         </div>
         {{end}}
         {{end}}
