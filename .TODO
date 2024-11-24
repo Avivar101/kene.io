@@ -17,10 +17,14 @@ TODO.
 [x] proper markdown formatting
 [x] reset database
 [x] set branch deployment
+[x] write up
+[] upload images
 [] polish up
 [] document README
-[] write up
 [] set CDN
+
+[] darken bg
+[]
 
 [x] what happens to my database whenever I redeploy
 [] persistent disk

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit New Post</title>
+    <style>
+                /* Base styles and dark theme colors */
+        :root {
+            --background: #1a1a1a;
+            --text: #ffffff;
+            --purple-accent: #9b4dca;
+            --purple-hover: #b76fe3;
+            --input-bg: #2d2d2d;
+            --border: #404040;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .link {
+            padding: 12px 24px;
+            background-color: var(--purple-accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 18px;
+            transition: transform 0.2s, background-color 0.2s;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .link:hover {
+            background-color: var(--purple-hover);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <h1><a href="/">Kene</a></h1>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <a href="/admin/post" class="link">Post</a>
+            <a href="/admin/images" class="link">Images</a>
+        </div>
+    </main>
+</body>
+</html>

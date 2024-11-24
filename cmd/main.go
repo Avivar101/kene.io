@@ -179,6 +179,22 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// render template for admin
+func adminHandler(w http.ResponseWriter, r *http.Request) {
+	// get template path
+	tmplPath := filepath.Join("../templates", "admin.html")
+	tmpl, err := template.ParseFiles(tmplPath)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
 // submit and save blog post
 func submitPostsHandler(w http.ResponseWriter, r *http.Request) {
 	// check if POST request
@@ -218,7 +234,7 @@ func submitPostsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Handle uploaded Markdown file
-	file, handler, err := r.FormFile("content")
+	file, _, err := r.FormFile("content")
 	if err != nil {
 		http.Error(w, "Error uploading file", http.StatusBadRequest)
 		return
@@ -263,11 +279,77 @@ func submitPostsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "Post submitted successfully with title: %s and content saved as %s", title, handler.Filename)
+	// redirect
+	http.Redirect(w, r, "/admin/", http.StatusSeeOther)
+}
+
+// handle image template
+func imageHandler(w http.ResponseWriter, r *http.Request) {
+	// get template path
+	tmplPath := filepath.Join("../templates", "imageManager.html")
+	tmpl, err := template.ParseFiles(tmplPath)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+}
+
+// upload image handler
+func uploadHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Parse the multipart form
+	err := r.ParseMultipartForm(10 << 20) // Limit upload size to 10MB
+	if err != nil {
+		http.Error(w, "Unable to parse form", http.StatusBadRequest)
+		return
+	}
+
+	// Retrieve the files
+	files := r.MultipartForm.File["file"]
+	if files == nil {
+		http.Error(w, "No files uploaded", http.StatusBadRequest)
+		return
+	}
+
+	for _, fileHeader := range files {
+		file, err := fileHeader.Open()
+		if err != nil {
+			http.Error(w, "Unable to open file", http.StatusInternalServerError)
+			return
+		}
+		defer file.Close()
+
+		// Save the file
+		out, err := os.Create("../images/" + fileHeader.Filename)
+		if err != nil {
+			http.Error(w, "Unable to save file", http.StatusInternalServerError)
+			return
+		}
+		defer out.Close()
+
+		_, err = out.ReadFrom(file)
+		if err != nil {
+			http.Error(w, "Error saving file", http.StatusInternalServerError)
+			return
+		}
+	}
+	// Successful submission
+	http.Redirect(w, r, "/admin/", http.StatusSeeOther)
 }
 
 // submit post template handler
 func templateHandler(w http.ResponseWriter, r *http.Request) {
+
 	// get template path
 	tmplPath := filepath.Join("../templates", "createPost.html")
 	tmpl, err := template.ParseFiles(tmplPath)
@@ -314,14 +396,18 @@ func main() {
 
 	// Serve static files
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("../static/"))))
+	router.PathPrefix("/images/").Handler(http.StripPrefix("/images/", http.FileServer(http.Dir("../images/"))))
 
 	// handle routing
 	router.HandleFunc("/", homeHandler)
 	router.HandleFunc("/projects", comingSoon)
 	router.HandleFunc("/profile", comingSoon)
 	router.HandleFunc("/{slug}", renderPostMarkdown)
+	router.HandleFunc("/admin/", adminHandler)
 	router.HandleFunc("/admin/post", templateHandler)
 	router.HandleFunc("/admin/submit-post", submitPostsHandler)
+	router.HandleFunc("/admin/images", imageHandler)
+	router.HandleFunc("/admin/upload", uploadHandler)
 
 	log.Fatal(http.ListenAndServe("0.0.0.0:8080", router))
 }

@@ -1,11 +1,11 @@
 :root {
-    --bg-primary: #1a1a1a;
-    --bg-secondary: #242424;
+    --bg-primary: #000000;
+    --bg-secondary: #000000;
     --text-primary: #e0e0e0;
     --text-secondary: #a0a0a0;
     --accent: #9d4edd;
     --accent-hover: #b76cff;
-    --card-bg: #2a2a2a;
+    --card-bg: #1b1b1b;
 }
 
 * {
@@ -14,9 +14,33 @@
     box-sizing: border-box;
 }
 
+.typewriter {
+    font-size: 16px;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    white-space: nowrap; /* Prevent text wrapping */
+    overflow: hidden; /* Hide overflow text */
+    border-right: 2px solid black; /* Simulate a typing cursor */
+    animation: typing 2s steps(40, end), blink 0.5s infinite alternate;
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes blink {
+    from { border-right-color: black; }
+    to { border-right-color: transparent; }
+}
+
 body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background-color: var(--bg-primary);
+    margin: 0 210px 0 210px;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background-color: var(--card-bg);
     color: var(--text-primary);
     line-height: 1.6;
 }
@@ -40,6 +64,7 @@ nav {
 }
 
 nav h1 > a {
+    font-family: 'Courier New', Courier, monospace;
     font-size: 2rem;
     color: var(--accent);
     white-space: nowrap;
@@ -50,6 +75,7 @@ nav h1 > a {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: (var(--bg-primary));
 }
 
 .nav-links {
@@ -101,9 +127,30 @@ main h1 {
     padding-bottom: 0.005rem;
 }
 
+.content {
+    text-align: justify;
+}
+
+.content h1 {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-align: left;
+}
+
 .content h2, h3 {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-align: left;
     margin-top: 30px;
     margin-bottom: 0.1em;
+}
+
+.content p {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 400;
+    line-height: 1.6;
 }
 
 .content ol, ul {
@@ -124,6 +171,11 @@ main h1 {
     margin-bottom: 0.5em;
 }
 
+code {
+    font-family: 'Fira Code', monospace;
+    font-feature-settings: "liga" 1;
+}
+
 
 strong {
     font-weight: bold;
@@ -140,7 +192,7 @@ strong {
     align-items: center;
     gap: 2rem;
     transition: transform 0.3s ease, background-color 0.3s ease;
-    max-width: 700px;
+    width: 700px;
 }
 
 .post:hover {
@@ -169,6 +221,16 @@ strong {
     color: var(--accent);
 }
 
+img {
+    max-width: 100%;
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+}
+img.zoomed {
+    transform: scale(1.8) translateX(10%); /* Slight zoom without shift */
+    cursor: zoom-out;
+}
+
 footer {
     text-align: center;
     padding: 2rem;
@@ -178,6 +240,11 @@ footer {
 }
 
 @media (max-width: 768px) {
+
+    body {
+        margin: 0;
+    }
+
     nav {
         gap: 0.8rem;
     }
@@ -187,7 +254,7 @@ footer {
     }
 
     .nav-links a {
-        font-size: 0.9rem;
+        font-size: 0.6rem;
     }
 
     .email-btn {
@@ -199,6 +266,7 @@ footer {
         padding: 1rem;
         gap: 1rem;
         margin-bottom: 5px;
+        width: 92vw;
     }
 
     .post .date {
@@ -208,5 +276,23 @@ footer {
 
     .post .title {
         font-size: 1rem;
+    }
+
+    .content h1 {
+        font-size: 35px;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+    }
+
+    .content h2, h3 {
+        font-weight: 00;
+        letter-spacing: -0.02em;
+        text-align: left;
+        margin-top: 30px;
+        margin-bottom: 0.1em;
+    }
+    img.zoomed {
+        transform: scale(2) translateX(20%);
+        cursor: zoom-out;
     }
 }

@@ -37,11 +37,11 @@
     <div class="wrapper">
     <header>
         <nav>
-            <h1><a href="/">Kene</a></h1>
+            <h1><a href="/">kene</a></h1>
             <div class="nav-links">
-                <a href="/projects">Projects</a>
-                <a href="/profile">Profile</a>
-                <button class="email-btn" onclick="window.location.href='mailto:benjohnokezie@gmail.com'">Send email</button>
+                <a href="/projects">projects</a>
+                <a href="/profile">profile</a>
+                <button class="email-btn" onclick="window.location.href='mailto:benjohnokezie@gmail.com'" target="_blank">send email</button>
             </div>
         </nav>
     </header>
@@ -73,5 +73,22 @@
         </div>
     </footer>
 </div>
+<script>
+    // Select all images dynamically
+    const images = document.querySelectorAll('img');
+
+    images.forEach((img) => {
+        img.addEventListener('click', () => {
+            // Toggle zoomed class
+            if (img.classList.contains('zoomed')) {
+                img.classList.remove('zoomed'); // Zoom out
+            } else {
+                // Remove zoomed class from all images (optional, to ensure only one zooms at a time)
+                images.forEach((otherImg) => otherImg.classList.remove('zoomed'));
+                img.classList.add('zoomed'); // Zoom in
+            }
+        });
+    });
+</script>
 </body>
 </html>

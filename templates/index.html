@@ -21,8 +21,8 @@
         }
 
         .social-links svg {
-            width: 35px;
-            height: 35px;
+            width: 25px;
+            height: 25px;
             transition: transform 0.2s ease-in-out, fill 0.2s ease-in-out;
             fill: #e8e2eb;
         }
@@ -35,52 +35,55 @@
 </head>
 <body>
     <div class="wrapper">
-    <header>
-        <nav>
-            <h1><a href="/">Kene</a></h1>
-            <div class="nav-links">
-                <a href="/projects">Projects</a>
-                <a href="/profile">Profile</a>
-                <button class="email-btn" onclick="window.location.href='mailto:benjohnokezie@gmail.com'" target="blank">Send email</button>
+        <header>
+            <nav>
+                <h1><a href="/">kene</a></h1>
+                <div class="nav-links">
+                    <a href="/projects">projects</a>
+                    <a href="/profile">profile</a>
+                    <button class="email-btn" onclick="window.location.href='mailto:benjohnokezie@gmail.com'; return false;" target="_blank">send email</button>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <div class="typewriter">
+                Open to Hire!
             </div>
-        </nav>
-    </header>
+            {{range $year, $posts := .}}
+            <h1>{{$year}}</h1>
+            {{range $posts}}
+            <div class="post">
+                <span class="date">{{.PostedDate.Format "02 Jan"}}</span>
+                <a href="/{{.Slug}}?id={{.UniqueID}}" class="title">{{.Title}}</a>
+            </div>
+            {{end}}
+            {{end}}
+        </main>
 
-    <main>
-        {{range $year, $posts := .}}
-        <h1>{{$year}}</h1>
-        {{range $posts}}
-        <div class="post">
-            <span class="date">{{.PostedDate.Format "02 Jan"}}</span>
-            <a href="/{{.Slug}}?id={{.UniqueID}}" class="title">{{.Title}}</a>
-        </div>
-        {{end}}
-        {{end}}
-    </main>
-
-    <footer>
-        <div class="social-links">
-            <p>© 2024 Kene.</p>
-            <a href="https://twitter.com/BenjOkezie" target="_blank" aria-label="Twitter">
-                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50">
-                    <path d="M 11 4 C 7.134 4 4 7.134 4 11 L 4 39 C 4 42.866 7.134 46 11 46 L 39 46 C 42.866 46 46 42.866 46 39 L 46 11 C 46 7.134 42.866 4 39 4 L 11 4 z M 13.085938 13 L 21.023438 13 L 26.660156 21.009766 L 33.5 13 L 36 13 L 27.789062 22.613281 L 37.914062 37 L 29.978516 37 L 23.4375 27.707031 L 15.5 37 L 13 37 L 22.308594 26.103516 L 13.085938 13 z M 16.914062 15 L 31.021484 35 L 34.085938 35 L 19.978516 15 L 16.914062 15 z"></path>
-                </svg>
-            </a>
-          
-            <a href="https://www.linkedin.com/in/okeziebenj" target="_blank" aria-label="LinkedIn">
-                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50">
-                    <path d="M41,4H9C6.24,4,4,6.24,4,9v32c0,2.76,2.24,5,5,5h32c2.76,0,5-2.24,5-5V9C46,6.24,43.76,4,41,4z M17,20v19h-6V20H17z M11,14.47c0-1.4,1.2-2.47,3-2.47s2.93,1.07,3,2.47c0,1.4-1.12,2.53-3,2.53C12.2,17,11,15.87,11,14.47z M39,39h-6c0,0,0-9.26,0-10 c0-2-1-4-3.5-4.04h-0.08C27,24.96,26,27.02,26,29c0,0.91,0,10,0,10h-6V20h6v2.56c0,0,1.93-2.56,5.81-2.56 c3.97,0,7.19,2.73,7.19,8.26V39z"></path>
-                </svg>
-            </a>
-          
-            <a href="https://medium.com/@benjohnokezie" target="_blank" aria-label="Medium">
-                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50">
-                    <path d="M15 12A13 13 0 1015 38 13 13 0 1015 12zM35.5 13c-3.59 0-6.5 5.373-6.5 12 0 1.243.102 2.441.292 3.568.253 1.503.662 2.879 1.192 4.065.265.593.56 1.138.881 1.627.642.978 1.388 1.733 2.202 2.201C34.178 36.811 34.827 37 35.5 37s1.322-.189 1.933-.539c.814-.468 1.56-1.223 2.202-2.201.321-.489.616-1.034.881-1.627.53-1.185.939-2.562 1.192-4.065C41.898 27.441 42 26.243 42 25 42 18.373 39.09 13 35.5 13zM45.5 14c-.259 0-.509.173-.743.495-.157.214-.307.494-.448.833-.071.169-.14.353-.206.551-.133.395-.257.846-.37 1.343-.226.995-.409 2.181-.536 3.497-.063.658-.112 1.349-.146 2.065C43.017 23.499 43 24.241 43 25s.017 1.501.051 2.217c.033.716.082 1.407.146 2.065.127 1.316.31 2.501.536 3.497.113.498.237.948.37 1.343.066.198.135.382.206.551.142.339.292.619.448.833C44.991 35.827 45.241 36 45.5 36c1.381 0 2.5-4.925 2.5-11S46.881 14 45.5 14z"></path>
-                </svg>
-            </a>
-        </div>
-    </footer>
-</div>
+        <footer>
+            <div class="social-links">
+                <p>© 2024 Kene.</p>
+                <a href="https://twitter.com/BenjOkezie" target="_blank" aria-label="Twitter">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="90" height="90" viewBox="0 0 50 50">
+                        <path d="M 11 4 C 7.134 4 4 7.134 4 11 L 4 39 C 4 42.866 7.134 46 11 46 L 39 46 C 42.866 46 46 42.866 46 39 L 46 11 C 46 7.134 42.866 4 39 4 L 11 4 z M 13.085938 13 L 21.023438 13 L 26.660156 21.009766 L 33.5 13 L 36 13 L 27.789062 22.613281 L 37.914062 37 L 29.978516 37 L 23.4375 27.707031 L 15.5 37 L 13 37 L 22.308594 26.103516 L 13.085938 13 z M 16.914062 15 L 31.021484 35 L 34.085938 35 L 19.978516 15 L 16.914062 15 z"></path>
+                    </svg>
+                </a>
+            
+                <a href="https://www.linkedin.com/in/okeziebenj" target="_blank" aria-label="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="90" height="90" viewBox="0 0 50 50">
+                        <path d="M41,4H9C6.24,4,4,6.24,4,9v32c0,2.76,2.24,5,5,5h32c2.76,0,5-2.24,5-5V9C46,6.24,43.76,4,41,4z M17,20v19h-6V20H17z M11,14.47c0-1.4,1.2-2.47,3-2.47s2.93,1.07,3,2.47c0,1.4-1.12,2.53-3,2.53C12.2,17,11,15.87,11,14.47z M39,39h-6c0,0,0-9.26,0-10 c0-2-1-4-3.5-4.04h-0.08C27,24.96,26,27.02,26,29c0,0.91,0,10,0,10h-6V20h6v2.56c0,0,1.93-2.56,5.81-2.56 c3.97,0,7.19,2.73,7.19,8.26V39z"></path>
+                    </svg>
+                </a>
+            
+                <a href="https://medium.com/@benjohnokezie" target="_blank" aria-label="Medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="90" height="90" viewBox="0 0 50 50">
+                        <path d="M15 12A13 13 0 1015 38 13 13 0 1015 12zM35.5 13c-3.59 0-6.5 5.373-6.5 12 0 1.243.102 2.441.292 3.568.253 1.503.662 2.879 1.192 4.065.265.593.56 1.138.881 1.627.642.978 1.388 1.733 2.202 2.201C34.178 36.811 34.827 37 35.5 37s1.322-.189 1.933-.539c.814-.468 1.56-1.223 2.202-2.201.321-.489.616-1.034.881-1.627.53-1.185.939-2.562 1.192-4.065C41.898 27.441 42 26.243 42 25 42 18.373 39.09 13 35.5 13zM45.5 14c-.259 0-.509.173-.743.495-.157.214-.307.494-.448.833-.071.169-.14.353-.206.551-.133.395-.257.846-.37 1.343-.226.995-.409 2.181-.536 3.497-.063.658-.112 1.349-.146 2.065C43.017 23.499 43 24.241 43 25s.017 1.501.051 2.217c.033.716.082 1.407.146 2.065.127 1.316.31 2.501.536 3.497.113.498.237.948.37 1.343.066.198.135.382.206.551.142.339.292.619.448.833C44.991 35.827 45.241 36 45.5 36c1.381 0 2.5-4.925 2.5-11S46.881 14 45.5 14z"></path>
+                    </svg>
+                </a>
+            </div>
+        </footer>
+    </div>
 
     <script>
         // Get all navigation links
